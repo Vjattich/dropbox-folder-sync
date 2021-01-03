@@ -29,21 +29,18 @@ public class App {
     }
 
     public void sync() {
-
         scheduler.scheduleAtFixedRate(
                 this::syncFiles,
                 1,
                 updateMilliseconds,
                 TimeUnit.MILLISECONDS
         );
-
-        folderComponent.watch();
     }
 
     @SneakyThrows
     private void syncFiles() {
 
-        folderComponent.pauseWatch();
+        folderComponent.stopWatch();
 
         List<File> files = folderComponent.getFiles();
 
