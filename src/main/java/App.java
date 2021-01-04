@@ -3,6 +3,7 @@ import components.DBoxComponent;
 import components.FilesComponent;
 import components.FolderComponent;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.util.List;
@@ -10,13 +11,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class App {
 
     private final DBoxComponent dBoxComponent;
     private final FilesComponent filesComponent;
     private final FolderComponent folderComponent;
     private final long updateMilliseconds;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
     public App(DBoxComponent dBoxComponent,
                FilesComponent filesComponent,
@@ -37,19 +39,18 @@ public class App {
                 TimeUnit.MILLISECONDS
         );
 
-        folderComponent.watch();
+        folderComponent.startWatch();
+
     }
 
     @SneakyThrows
     private void syncFiles() {
 
-        folderComponent.pauseWatch();
-
         List<File> files = folderComponent.getFiles();
 
         List<Metadata> dbFolderEntries = dBoxComponent.getFolderEntries();
 
-        System.out.println("start sync");
+        log.info("start sync phase");
 
         //check what we upload
         uploadFiles(files, dbFolderEntries);
@@ -57,9 +58,7 @@ public class App {
         //or download
         downloadFiles(files, dbFolderEntries);
 
-        folderComponent.resumeWatch();
-
-        System.out.println("end sync");
+        log.info("end sync phase");
     }
 
     private void uploadFiles(List<File> listFiles, List<Metadata> dbFolderEntries) {

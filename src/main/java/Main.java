@@ -1,31 +1,40 @@
 import components.*;
+import components.hasher.DBoxHashHelper;
+import components.hasher.DBoxHasher;
+import lombok.extern.slf4j.Slf4j;
 
+import java.nio.file.StandardWatchEventKinds;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
-import static java.nio.file.StandardWatchEventKinds.*;
-
+@Slf4j
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchAlgorithmException {
 
-        PropertiesComponent propComponent = new PropertiesComponent();
+        PropertiesComponent propComponent = new PropertiesComponent("src/main/resources/application.properties");
 
-        DBoxComponent dBoxComponent = new DBoxComponent(propComponent.get("dbox.oauth2"), propComponent.get("dbox.folder"));
+        DateUtilsComponent dateUtils = new DateUtilsComponent();
 
-        EventFunctionComponent eventFunctionComponent = new EventFunctionComponent(dBoxComponent);
+        DBoxHashHelper hashHelper = new DBoxHashHelper(new DBoxHasher());
+
+        DBoxComponent dBoxComponent = new DBoxComponent(dateUtils, propComponent.get("dbox.oauth2"), propComponent.get("dbox.client.identifier"));
+
+        EventFunctionComponent eventFunctionComponent = new EventFunctionComponent(dBoxComponent, hashHelper);
 
         new App(
                 dBoxComponent,
                 new FilesComponent(
                         propComponent.get("sync.folder"),
-                        new DBoxHasher()
+                        hashHelper,
+                        dateUtils
                 ),
                 new FolderComponent(
                         propComponent.get("sync.folder"),
                         Map.of(
-                                ENTRY_CREATE, eventFunctionComponent::eventCreateFunction,
-                                ENTRY_DELETE, eventFunctionComponent::eventDeleteFunction,
-                                ENTRY_MODIFY, eventFunctionComponent::eventModifyFunction
+                                StandardWatchEventKinds.ENTRY_CREATE, path -> eventFunctionComponent.eventCreateFunction(path),
+                                StandardWatchEventKinds.ENTRY_DELETE, path -> eventFunctionComponent.eventDeleteFunction(path),
+                                StandardWatchEventKinds.ENTRY_MODIFY, path -> eventFunctionComponent.eventModifyFunction(path)
                         )
                 ),
                 (long) propComponent.get("sync.time", long.class)

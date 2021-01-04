@@ -1,5 +1,7 @@
 package components;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -8,12 +10,12 @@ import java.util.function.Function;
 
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 
+@Slf4j
 public class FolderComponent {
 
     private final String folderPath;
     private final Map<WatchEvent.Kind<Path>, Function<Path, Path>> eventsMap;
-    private volatile boolean paused = false;
-    private final Object pauseLock = new Object();
+    private volatile boolean stopped = false;
 
     public FolderComponent(String folderPath, Map<WatchEvent.Kind<Path>, Function<Path, Path>> eventsMap) {
         isFolder(folderPath);
@@ -21,9 +23,22 @@ public class FolderComponent {
         this.eventsMap = eventsMap;
     }
 
-    public void watch() {
+    public void stopWatch() {
+        this.stopped = true;
+    }
 
-        System.out.println("Watching path: " + folderPath);
+    public void startWatch() {
+        this.stopped = false;
+        this.watch();
+    }
+
+    public List<File> getFiles() {
+        return new ArrayList<>(Arrays.asList(Paths.get(folderPath).toFile().listFiles()));
+    }
+
+    private void watch() {
+
+        log.info("Watching path: {}", folderPath);
 
         Path path = Paths.get(folderPath);
 
@@ -34,52 +49,31 @@ public class FolderComponent {
             WatchKey key;
             while (Objects.nonNull(key = service.take())) {
 
-                synchronized (pauseLock) {
+                for (WatchEvent<?> event : key.pollEvents()) {
 
-                    if (paused) {
-                        synchronized (pauseLock) {
-                            System.out.println("watch pause");
-                            pauseLock.wait();
-                        }
-                    }
+                    WatchEvent.Kind<?> kind = event.kind();
 
-                    for (WatchEvent<?> event : key.pollEvents()) {
+                    if (StandardWatchEventKinds.OVERFLOW == kind) continue; // loop
 
-                        WatchEvent.Kind<?> kind = event.kind();
+                    Function<Path, Path> watchEventPathFunction = eventsMap.get(kind);
 
-                        if (StandardWatchEventKinds.OVERFLOW == kind) continue; // loop
+                    Path context = (Path) event.context();
 
-                        Function<Path, Path> watchEventPathFunction = eventsMap.get(kind);
+                    watchEventPathFunction.apply(
+                            Paths.get(folderPath + File.separator + context.toString())
+                    );
 
-                        Path context = (Path) event.context();
+                }
+                key.reset();
 
-                        watchEventPathFunction.apply(
-                                Paths.get(folderPath + File.separator + context.toString())
-                        );
-
-                    }
-                    key.reset();
+                if (stopped) {
+                    break;
                 }
 
             }
 
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Something went wrong", e);
-        }
-    }
-
-    public List<File> getFiles() {
-        return new ArrayList<>(Arrays.asList(Paths.get(folderPath).toFile().listFiles()));
-    }
-
-    public void pauseWatch() {
-        paused = true;
-    }
-
-    public void resumeWatch() {
-        synchronized (pauseLock) {
-            paused = false;
-            pauseLock.notifyAll(); // Unblocks thread
         }
     }
 

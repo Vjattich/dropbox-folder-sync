@@ -2,28 +2,30 @@ package components;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.Metadata;
+import components.hasher.DBoxHashHelper;
 import lombok.SneakyThrows;
 
-import java.io.*;
-import java.security.MessageDigest;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class FilesComponent {
 
     private final String folderPath;
-    private final DBoxHasher hasher;
+    private final DBoxHashHelper hashHelper;
+    private final DateUtilsComponent dateUtils;
 
-    public FilesComponent(String folderPath, DBoxHasher hasher) {
+    public FilesComponent(String folderPath, DBoxHashHelper hashHelper, DateUtilsComponent dateUtils) {
         this.folderPath = folderPath;
-        this.hasher = hasher;
+        this.hashHelper = hashHelper;
+        this.dateUtils = dateUtils;
     }
 
     @SneakyThrows
@@ -33,73 +35,56 @@ public class FilesComponent {
         }
     }
 
+    //todo this can be solve through good object
     public List<Metadata> getFilesForDownload(List<File> folderFiles, List<Metadata> dbFolderEntries) {
+        Map<String, File> fileHexMap = getFileMap(folderFiles);
+        return dbFolderEntries.stream().filter(metadata -> isMetadataDifferent(fileHexMap, metadata)).collect(toList());
+    }
 
-        Map<String, String> fileHexMap = getFileHexMap(folderFiles);
-
-        List<Metadata> list = new ArrayList<>();
-        for (Metadata metadata : dbFolderEntries) {
-            if (!((FileMetadata) metadata).getContentHash().equals(fileHexMap.get(metadata.getName()))) {
-                list.add(metadata);
-            }
-        }
-
-        return list;
+    private boolean isMetadataDifferent(Map<String, File> fileHexMap, Metadata metadata) {
+        FileMetadata fileMetadata = (FileMetadata) metadata;
+        File file = fileHexMap.get(metadata.getName());
+        return Objects.isNull(file)
+                || !fileMetadata.getContentHash().equals(hashHelper.getHash(file))
+                && dateUtils.toLocalDateTimeWithoutNano(fileMetadata.getClientModified()).isAfter(dateUtils.toLocalDateTimeWithoutNano(file.lastModified()));
     }
 
     public List<File> getFilesForUpload(List<File> folderFiles, List<Metadata> dbFolderEntries) {
-
-        Map<String, String> metadataHexMap = getMetadataHexMap(dbFolderEntries);
-
-        List<File> list = new ArrayList<>();
-        for (File file : folderFiles) {
-            if (!toHex(file).equals(metadataHexMap.get(file.getName()))) {
-                list.add(file);
-            }
-        }
-
-        return list;
+        Map<String, Metadata> metadataHexMap = getMetadataMap(dbFolderEntries);
+        return folderFiles.stream().filter(file -> isFileDifferent(metadataHexMap, file)).collect(toList());
     }
 
-    private Map<String, String> getFileHexMap(List<File> folderFiles) {
+    private boolean isFileDifferent(Map<String, Metadata> metadataHexMap, File localFile) {
+        Metadata metadata = metadataHexMap.get(localFile.getName());
+
+        if (Objects.isNull(metadata)) {
+            return true;
+        }
+
+        FileMetadata fileMetadata = (FileMetadata) metadata;
+
+        return !hashHelper.getHash(localFile).equals(fileMetadata.getContentHash())
+                && dateUtils.toLocalDateTimeWithoutNano(localFile.lastModified()).isAfter(dateUtils.toLocalDateTimeWithoutNano(fileMetadata.getClientModified()));
+    }
+
+    private Map<String, File> getFileMap(List<File> folderFiles) {
         return folderFiles.stream()
                 .collect(
-                        Collectors.toMap(
+                        toMap(
                                 File::getName,
-                                this::toHex
+                                file -> file
                         )
                 );
     }
 
-    private Map<String, String> getMetadataHexMap(List<Metadata> dbFolderEntries) {
+    private Map<String, Metadata> getMetadataMap(List<Metadata> dbFolderEntries) {
         return dbFolderEntries.stream()
                 .collect(
-                        Collectors.toMap(
+                        toMap(
                                 Metadata::getName,
-                                metadata -> ((FileMetadata) metadata).getContentHash()
+                                metadata -> metadata
                         )
                 );
-    }
-
-    @SneakyThrows
-    String toHex(File file) {
-
-        byte[] buf = new byte[1024];
-
-        InputStream in = new FileInputStream(file);
-        try {
-            while (true) {
-                int n = in.read(buf);
-                if (n < 0) {
-                    break;// EOF
-                }
-                hasher.update(buf, 0, n);
-            }
-        } finally {
-            in.close();
-        }
-
-        return DBoxHasher.hex(hasher.digest());
     }
 
 }
