@@ -15,6 +15,10 @@ public class DateUtilsComponent {
         return java.sql.Timestamp.valueOf(toLocalDateTimeWithoutNano(epochMilli));
     }
 
+    public LocalDateTime toLocalDateTimeWithoutNano(Date date) {
+        return toLocalDateTimeWithoutNano(date.getTime());
+    }
+
     public LocalDateTime toLocalDateTimeWithoutNano(long epochMilli) {
         return toLocalDateTime(epochMilli).withNano(0);
     }
@@ -22,6 +26,5 @@ public class DateUtilsComponent {
     public LocalDateTime toLocalDateTime(long epochMilli) {
         return Instant.ofEpochMilli(epochMilli).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
-
 
 }
