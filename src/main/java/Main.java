@@ -1,11 +1,13 @@
 import components.*;
 import components.hasher.DBoxHashHelper;
 import components.hasher.DBoxHasher;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.StandardWatchEventKinds;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
+@Slf4j
 public class Main {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
@@ -14,7 +16,7 @@ public class Main {
 
         DateUtilsComponent dateUtils = new DateUtilsComponent();
 
-        DBoxComponent dBoxComponent = new DBoxComponent(propComponent.get("dbox.oauth2"), dateUtils);
+        DBoxComponent dBoxComponent = new DBoxComponent(dateUtils, propComponent.get("dbox.oauth2"), propComponent.get("dbox.client.identifier"));
 
         EventFunctionComponent eventFunctionComponent = new EventFunctionComponent(dBoxComponent);
 
@@ -29,8 +31,8 @@ public class Main {
                         propComponent.get("sync.folder"),
                         Map.of(
                                 StandardWatchEventKinds.ENTRY_CREATE, path -> eventFunctionComponent.eventCreateFunction(path),
-                                StandardWatchEventKinds.ENTRY_DELETE, path1 -> eventFunctionComponent.eventDeleteFunction(path1),
-                                StandardWatchEventKinds.ENTRY_MODIFY, path2 -> eventFunctionComponent.eventModifyFunction(path2)
+                                StandardWatchEventKinds.ENTRY_DELETE, path -> eventFunctionComponent.eventDeleteFunction(path),
+                                StandardWatchEventKinds.ENTRY_MODIFY, path -> eventFunctionComponent.eventModifyFunction(path)
                         )
                 ),
                 (long) propComponent.get("sync.time", long.class)

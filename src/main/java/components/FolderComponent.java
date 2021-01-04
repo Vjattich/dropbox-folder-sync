@@ -1,5 +1,7 @@
 package components;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -8,6 +10,7 @@ import java.util.function.Function;
 
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 
+@Slf4j
 public class FolderComponent {
 
     private final String folderPath;
@@ -35,7 +38,7 @@ public class FolderComponent {
 
     private void watch() {
 
-        System.out.println("Watching path: " + folderPath);
+        log.info("Watching path: {}", folderPath);
 
         Path path = Paths.get(folderPath);
 

@@ -61,11 +61,10 @@ import java.security.NoSuchAlgorithmException;
  * </pre>
  */
 public class DBoxHasher extends MessageDigest implements Cloneable {
+    private final int BLOCK_SIZE = 4 * 1024 * 1024;
     private MessageDigest overallHasher;
     private MessageDigest blockHasher;
     private int blockPos = 0;
-
-    private final int BLOCK_SIZE = 4 * 1024 * 1024;
 
     public DBoxHasher() throws NoSuchAlgorithmException {
         this(MessageDigest.getInstance("SHA-256"));

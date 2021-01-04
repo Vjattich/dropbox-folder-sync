@@ -36,7 +36,7 @@ public class FilesComponent {
 
     //todo this can be solve through good object
     public List<Metadata> getFilesForDownload(List<File> folderFiles, List<Metadata> dbFolderEntries) {
-        Map<String, File> fileHexMap = getFileHexMap(folderFiles);
+        Map<String, File> fileHexMap = getFileMap(folderFiles);
         return dbFolderEntries.stream().filter(metadata -> isMetadataDifferent(fileHexMap, metadata)).collect(toList());
     }
 
@@ -48,7 +48,7 @@ public class FilesComponent {
     }
 
     public List<File> getFilesForUpload(List<File> folderFiles, List<Metadata> dbFolderEntries) {
-        Map<String, Metadata> metadataHexMap = getMetadataHexMap(dbFolderEntries);
+        Map<String, Metadata> metadataHexMap = getMetadataMap(dbFolderEntries);
         return folderFiles.stream().filter(file -> isFileDifferent(metadataHexMap, file)).collect(toList());
     }
 
@@ -58,7 +58,7 @@ public class FilesComponent {
                 && dateUtils.toLocalDateTimeWithoutNano(localFile.lastModified()).isAfter(dateUtils.toLocalDateTimeWithoutNano(fileMetadata.getClientModified()));
     }
 
-    private Map<String, File> getFileHexMap(List<File> folderFiles) {
+    private Map<String, File> getFileMap(List<File> folderFiles) {
         return folderFiles.stream()
                 .collect(
                         toMap(
@@ -68,7 +68,7 @@ public class FilesComponent {
                 );
     }
 
-    private Map<String, Metadata> getMetadataHexMap(List<Metadata> dbFolderEntries) {
+    private Map<String, Metadata> getMetadataMap(List<Metadata> dbFolderEntries) {
         return dbFolderEntries.stream()
                 .collect(
                         toMap(
