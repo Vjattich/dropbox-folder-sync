@@ -1,4 +1,4 @@
-package components;
+package components.hasher;
 
 import java.nio.ByteBuffer;
 import java.security.DigestException;
@@ -65,10 +65,14 @@ public class DBoxHasher extends MessageDigest implements Cloneable {
     private MessageDigest blockHasher;
     private int blockPos = 0;
 
-    public static final int BLOCK_SIZE = 4 * 1024 * 1024;
+    private final int BLOCK_SIZE = 4 * 1024 * 1024;
 
-    public DBoxHasher() {
-        this(newSha256Hasher(), newSha256Hasher(), 0);
+    public DBoxHasher() throws NoSuchAlgorithmException {
+        this(MessageDigest.getInstance("SHA-256"));
+    }
+
+    private DBoxHasher(MessageDigest hasher) {
+        this(hasher, hasher, 0);
     }
 
     private DBoxHasher(MessageDigest overallHasher, MessageDigest blockHasher, int blockPos) {
@@ -131,8 +135,7 @@ public class DBoxHasher extends MessageDigest implements Cloneable {
     }
 
     @Override
-    protected int engineDigest(byte[] buf, int offset, int len)
-            throws DigestException {
+    protected int engineDigest(byte[] buf, int offset, int len) throws DigestException {
         finishBlockIfNonEmpty();
         return overallHasher.digest(buf, offset, len);
     }
@@ -145,8 +148,7 @@ public class DBoxHasher extends MessageDigest implements Cloneable {
     }
 
     @Override
-    public DBoxHasher clone()
-            throws CloneNotSupportedException {
+    public DBoxHasher clone() throws CloneNotSupportedException {
         DBoxHasher clone = (DBoxHasher) super.clone();
         clone.overallHasher = (MessageDigest) clone.overallHasher.clone();
         clone.blockHasher = (MessageDigest) clone.blockHasher.clone();
@@ -170,25 +172,4 @@ public class DBoxHasher extends MessageDigest implements Cloneable {
         }
     }
 
-    static MessageDigest newSha256Hasher() {
-        try {
-            return MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException ex) {
-            throw new AssertionError("Couldn't create SHA-256 hasher");
-        }
-    }
-
-    static final char[] HEX_DIGITS = new char[]{
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            'a', 'b', 'c', 'd', 'e', 'f'};
-
-    public static String hex(byte[] data) {
-        char[] buf = new char[2 * data.length];
-        int i = 0;
-        for (byte b : data) {
-            buf[i++] = HEX_DIGITS[(b & 0xf0) >>> 4];
-            buf[i++] = HEX_DIGITS[b & 0x0f];
-        }
-        return new String(buf);
-    }
 }

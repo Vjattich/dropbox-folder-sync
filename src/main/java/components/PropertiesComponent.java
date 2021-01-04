@@ -9,11 +9,6 @@ public class PropertiesComponent {
 
     private final Properties properties = new Properties();
 
-    //todo it looks no good for me
-    public PropertiesComponent() {
-        this("src/main/resources/application.properties");
-    }
-
     public PropertiesComponent(String propertiesPath) {
         try {
             properties.load(new FileInputStream(propertiesPath));

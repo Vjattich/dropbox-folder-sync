@@ -17,16 +17,17 @@ import java.util.Locale;
 public class DBoxComponent {
 
     private final DbxClientV2 client;
-    private final String dboxFolder;
 
-    public DBoxComponent(String oauth2, String dboxFolder) {
+    private final DateUtilsComponent dateUtils;
+
+    public DBoxComponent(String oauth2, DateUtilsComponent dateUtils) {
         this.client = new DbxClientV2(
                 DbxRequestConfig.newBuilder("vjzettlr/1.0")
                         .withUserLocale(Locale.getDefault().toString())
                         .build(),
                 oauth2
         );
-        this.dboxFolder = dboxFolder;
+        this.dateUtils = dateUtils;
     }
 
     @SneakyThrows
@@ -35,7 +36,7 @@ public class DBoxComponent {
         System.out.println("upload " + file.getName());
         client.files()
                 .uploadBuilder("/" + file.getName())
-                .withClientModified(java.sql.Timestamp.valueOf(Instant.ofEpochMilli(file.lastModified()).atZone(ZoneId.systemDefault()).toLocalDateTime().withNano(0)))
+                .withClientModified(dateUtils.toDateWithoutNano(file.lastModified()))
                 .withMode(WriteMode.OVERWRITE)
                 .uploadAndFinish(new FileInputStream(file));
     }
