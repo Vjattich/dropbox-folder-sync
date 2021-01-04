@@ -1,18 +1,21 @@
 package components.hasher;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.nio.ByteBuffer;
 import java.security.DigestException;
 import java.security.NoSuchAlgorithmException;
 
-import components.hasher.DBoxHasher;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static org.junit.Assert.assertEquals;
 
 public class DBoxHasherTest {
+
+    @Rule
+    public ExpectedException testEngineUpdate8ExceptionRule = ExpectedException.none();
+    @Rule
+    public ExpectedException testEngineDigestExceptionRule = ExpectedException.none();
 
     @Test
     public void testConstructor() throws NoSuchAlgorithmException {
@@ -43,9 +46,6 @@ public class DBoxHasherTest {
                 new byte[]{65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65}, 2, 3
         );
     }
-
-    @Rule
-    public ExpectedException testEngineUpdate8ExceptionRule = ExpectedException.none();
 
     @Test
     public void testEngineUpdate8() throws NoSuchAlgorithmException {
@@ -96,9 +96,6 @@ public class DBoxHasherTest {
         assertEquals((byte) 90, actualEngineDigestResult[30]);
         assertEquals((byte) -16, actualEngineDigestResult[31]);
     }
-
-    @Rule
-    public ExpectedException testEngineDigestExceptionRule = ExpectedException.none();
 
     @Test
     public void testEngineDigest4() throws DigestException, NoSuchAlgorithmException {

@@ -1,11 +1,11 @@
 package components;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+
+import static org.junit.Assert.assertTrue;
 
 public class DateUtilsComponentTest {
 
@@ -23,12 +23,12 @@ public class DateUtilsComponentTest {
 
     @Test
     public void testToLocalDateTimeWithoutNano() {
-        Assert.assertEquals(dateUtilsComponent.toLocalDateTimeWithoutNano(1L), LocalDateTime.of(1970,1,1,6,0,0, 0));
+        Assert.assertEquals(dateUtilsComponent.toLocalDateTimeWithoutNano(1L), LocalDateTime.of(1970, 1, 1, 6, 0, 0, 0));
     }
 
     @Test
     public void testToLocalDateTime() {
-        Assert.assertEquals(dateUtilsComponent.toLocalDateTime(1L), LocalDateTime.of(1970,1,1,6,0,0, 1000000));
+        Assert.assertEquals(dateUtilsComponent.toLocalDateTime(1L), LocalDateTime.of(1970, 1, 1, 6, 0, 0, 1000000));
     }
 }
 
