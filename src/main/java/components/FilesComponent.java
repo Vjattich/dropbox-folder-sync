@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -43,7 +44,8 @@ public class FilesComponent {
     private boolean isMetadataDifferent(Map<String, File> fileHexMap, Metadata metadata) {
         FileMetadata fileMetadata = (FileMetadata) metadata;
         File file = fileHexMap.get(metadata.getName());
-        return !fileMetadata.getContentHash().equals(hashHelper.getHash(file))
+        return Objects.isNull(file)
+                || !fileMetadata.getContentHash().equals(hashHelper.getHash(file))
                 && dateUtils.toLocalDateTimeWithoutNano(fileMetadata.getClientModified()).isAfter(dateUtils.toLocalDateTimeWithoutNano(file.lastModified()));
     }
 
@@ -53,7 +55,14 @@ public class FilesComponent {
     }
 
     private boolean isFileDifferent(Map<String, Metadata> metadataHexMap, File localFile) {
-        FileMetadata fileMetadata = (FileMetadata) metadataHexMap.get(localFile.getName());
+        Metadata metadata = metadataHexMap.get(localFile.getName());
+
+        if (Objects.isNull(metadata)) {
+            return true;
+        }
+
+        FileMetadata fileMetadata = (FileMetadata) metadata;
+
         return !hashHelper.getHash(localFile).equals(fileMetadata.getContentHash())
                 && dateUtils.toLocalDateTimeWithoutNano(localFile.lastModified()).isAfter(dateUtils.toLocalDateTimeWithoutNano(fileMetadata.getClientModified()));
     }

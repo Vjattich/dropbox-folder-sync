@@ -1,17 +1,24 @@
 package components;
 
+import com.dropbox.core.v2.files.FileMetadata;
+import com.dropbox.core.v2.files.Metadata;
+import components.hasher.DBoxHashHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class EventFunctionComponent {
 
     private final DBoxComponent dBoxComponent;
+    private final DBoxHashHelper hashHelper;
 
-    public EventFunctionComponent(DBoxComponent dBoxComponent) {
+    public EventFunctionComponent(DBoxComponent dBoxComponent, DBoxHashHelper hashHelper) {
         this.dBoxComponent = dBoxComponent;
+        this.hashHelper = hashHelper;
     }
 
     public Path eventCreateFunction(Path path) {
@@ -20,30 +27,52 @@ public class EventFunctionComponent {
 
         File file = path.toFile();
 
-        if (file.exists()) {
-            dBoxComponent.upload(file);
+        if (isAlreadyInDBox(file)) {
+            return path;
         }
+
+        dBoxComponent.upload(file);
 
         return path;
     }
 
     public Path eventModifyFunction(Path path) {
 
-        log.info("modifying file in " + path);
+        log.info("modifying file in {}", path);
 
         File file = path.toFile();
 
-        if (file.exists()) {
-            dBoxComponent.upload(file);
+        if (isAlreadyInDBox(file)) {
+            return path;
         }
+
+        dBoxComponent.upload(file);
 
         return path;
     }
 
     public Path eventDeleteFunction(Path path) {
-        log.info("deleted file in " + path);
+        log.info("deleted file {} ", path);
         //todo delete event
         return path;
+    }
+
+    private boolean isAlreadyInDBox(File file) {
+
+        Map<String, String> folderEntries = dBoxComponent.getFolderEntries().stream()
+                .collect(
+                        Collectors.toMap(
+                                Metadata::getName,
+                                metadata -> ((FileMetadata) metadata).getContentHash())
+                );
+
+        boolean b = folderEntries.containsKey(file.getName()) && folderEntries.get(file.getName()).equals(hashHelper.getHash(file));
+
+        if (b) {
+            log.info("file {} is already in dropbox", file.getPath());
+        }
+
+        return b;
     }
 
 }

@@ -16,15 +16,17 @@ public class Main {
 
         DateUtilsComponent dateUtils = new DateUtilsComponent();
 
+        DBoxHashHelper hashHelper = new DBoxHashHelper(new DBoxHasher());
+
         DBoxComponent dBoxComponent = new DBoxComponent(dateUtils, propComponent.get("dbox.oauth2"), propComponent.get("dbox.client.identifier"));
 
-        EventFunctionComponent eventFunctionComponent = new EventFunctionComponent(dBoxComponent);
+        EventFunctionComponent eventFunctionComponent = new EventFunctionComponent(dBoxComponent, hashHelper);
 
         new App(
                 dBoxComponent,
                 new FilesComponent(
                         propComponent.get("sync.folder"),
-                        new DBoxHashHelper(new DBoxHasher()),
+                        hashHelper,
                         dateUtils
                 ),
                 new FolderComponent(

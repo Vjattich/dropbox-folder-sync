@@ -18,7 +18,7 @@ public class App {
     private final FilesComponent filesComponent;
     private final FolderComponent folderComponent;
     private final long updateMilliseconds;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
     public App(DBoxComponent dBoxComponent,
                FilesComponent filesComponent,
@@ -31,18 +31,20 @@ public class App {
     }
 
     public void sync() {
+
         scheduler.scheduleAtFixedRate(
                 this::syncFiles,
                 1,
                 updateMilliseconds,
                 TimeUnit.MILLISECONDS
         );
+
+        folderComponent.startWatch();
+
     }
 
     @SneakyThrows
     private void syncFiles() {
-
-        folderComponent.stopWatch();
 
         List<File> files = folderComponent.getFiles();
 
@@ -56,9 +58,7 @@ public class App {
         //or download
         downloadFiles(files, dbFolderEntries);
 
-        folderComponent.startWatch();
-
-        log.info("start sync phase");
+        log.info("end sync phase");
     }
 
     private void uploadFiles(List<File> listFiles, List<Metadata> dbFolderEntries) {
