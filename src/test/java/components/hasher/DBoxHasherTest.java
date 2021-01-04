@@ -108,44 +108,6 @@ public class DBoxHasherTest {
     }
 
     @Test
-    public void testEngineDigest5() throws NoSuchAlgorithmException {
-        byte[] actualEngineDigestResult = (new DBoxHasher()).engineDigest();
-        assertEquals(32, actualEngineDigestResult.length);
-        assertEquals((byte) -29, actualEngineDigestResult[0]);
-        assertEquals((byte) -80, actualEngineDigestResult[1]);
-        assertEquals((byte) -60, actualEngineDigestResult[2]);
-        assertEquals((byte) 66, actualEngineDigestResult[3]);
-        assertEquals((byte) -104, actualEngineDigestResult[4]);
-        assertEquals((byte) -4, actualEngineDigestResult[5]);
-        assertEquals((byte) -103, actualEngineDigestResult[26]);
-        assertEquals((byte) 27, actualEngineDigestResult[27]);
-        assertEquals((byte) 120, actualEngineDigestResult[28]);
-        assertEquals((byte) 82, actualEngineDigestResult[29]);
-        assertEquals((byte) -72, actualEngineDigestResult[30]);
-        assertEquals((byte) 85, actualEngineDigestResult[31]);
-    }
-
-    @Test
-    public void testEngineDigest6() throws NoSuchAlgorithmException {
-        DBoxHasher dBoxHasher = new DBoxHasher();
-        dBoxHasher.update(new byte[]{65, 65, 65, 65, 65, 65, 65, 65});
-        byte[] actualEngineDigestResult = dBoxHasher.engineDigest();
-        assertEquals(32, actualEngineDigestResult.length);
-        assertEquals((byte) 100, actualEngineDigestResult[0]);
-        assertEquals((byte) -102, actualEngineDigestResult[1]);
-        assertEquals((byte) -106, actualEngineDigestResult[2]);
-        assertEquals((byte) 108, actualEngineDigestResult[3]);
-        assertEquals((byte) -66, actualEngineDigestResult[4]);
-        assertEquals((byte) 63, actualEngineDigestResult[5]);
-        assertEquals((byte) -31, actualEngineDigestResult[26]);
-        assertEquals((byte) -67, actualEngineDigestResult[27]);
-        assertEquals((byte) -79, actualEngineDigestResult[28]);
-        assertEquals((byte) 65, actualEngineDigestResult[29]);
-        assertEquals((byte) 90, actualEngineDigestResult[30]);
-        assertEquals((byte) -16, actualEngineDigestResult[31]);
-    }
-
-    @Test
     public void testEngineDigest7() throws DigestException, NoSuchAlgorithmException {
         testEngineDigestExceptionRule.expect(DigestException.class);
         (new DBoxHasher()).engineDigest(
