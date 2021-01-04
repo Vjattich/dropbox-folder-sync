@@ -20,7 +20,20 @@ public class FolderComponent {
         this.eventsMap = eventsMap;
     }
 
-    public void watch() {
+    public void stopWatch() {
+        this.stopped = true;
+    }
+
+    public void startWatch() {
+        this.stopped = false;
+        this.watch();
+    }
+
+    public List<File> getFiles() {
+        return new ArrayList<>(Arrays.asList(Paths.get(folderPath).toFile().listFiles()));
+    }
+
+    private void watch() {
 
         System.out.println("Watching path: " + folderPath);
 
@@ -59,19 +72,6 @@ public class FolderComponent {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Something went wrong", e);
         }
-    }
-
-    public List<File> getFiles() {
-        return new ArrayList<>(Arrays.asList(Paths.get(folderPath).toFile().listFiles()));
-    }
-
-    public void stopWatch() {
-        this.stopped = true;
-    }
-
-    public void resumeWatch() {
-        this.stopped = false;
-        this.watch();
     }
 
     private void isFolder(String folderPath) {

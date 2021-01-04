@@ -54,7 +54,7 @@ public class App {
         //or download
         downloadFiles(files, dbFolderEntries);
 
-        folderComponent.resumeWatch();
+        folderComponent.startWatch();
 
         System.out.println("end sync");
     }
