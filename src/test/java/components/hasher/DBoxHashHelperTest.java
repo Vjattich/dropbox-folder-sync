@@ -8,18 +8,18 @@ import java.security.NoSuchAlgorithmException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class DboxHashHelperTest {
+public class DBoxHashHelperTest {
     @Test
     @Ignore
     public void testGetHash() throws NoSuchAlgorithmException {
-        DboxHashHelper dboxHashHelper = new DboxHashHelper(new DBoxHasher());
+        DBoxHashHelper dboxHashHelper = new DBoxHashHelper(new DBoxHasher());
         dboxHashHelper.getHash(Paths.get(System.getProperty("java.io.tmpdir"), "test.txt").toFile());
     }
 
     @Test
     @Ignore
     public void testHex() throws NoSuchAlgorithmException {
-        DboxHashHelper dboxHashHelper = new DboxHashHelper(new DBoxHasher());
+        DBoxHashHelper dboxHashHelper = new DBoxHashHelper(new DBoxHasher());
         String hex = dboxHashHelper.hex(new byte[]{65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65});
         assertEquals("2a846fa617c3361fc117e1c5c1e1838c336b6a5cef982c1a2d9bdf68f2f1992a", hex);
         String hex1 = dboxHashHelper.hex(new byte[]{65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65});

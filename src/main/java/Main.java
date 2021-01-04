@@ -1,6 +1,6 @@
 import components.*;
 import components.hasher.DBoxHasher;
-import components.hasher.DboxHashHelper;
+import components.hasher.DBoxHashHelper;
 
 import java.nio.file.StandardWatchEventKinds;
 import java.security.NoSuchAlgorithmException;
@@ -22,7 +22,7 @@ public class Main {
                 dBoxComponent,
                 new FilesComponent(
                         propComponent.get("sync.folder"),
-                        new DboxHashHelper(new DBoxHasher())
+                        new DBoxHashHelper(new DBoxHasher())
                 ),
                 new FolderComponent(
                         propComponent.get("sync.folder"),

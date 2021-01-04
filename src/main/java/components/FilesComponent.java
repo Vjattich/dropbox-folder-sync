@@ -2,23 +2,21 @@ package components;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.Metadata;
-import components.hasher.DboxHashHelper;
+import components.hasher.DBoxHashHelper;
 import lombok.SneakyThrows;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
 public class FilesComponent {
 
     private final String folderPath;
-    private final DboxHashHelper hashHelper;
+    private final DBoxHashHelper hashHelper;
 
-    public FilesComponent(String folderPath, DboxHashHelper hashHelper) {
+    public FilesComponent(String folderPath, DBoxHashHelper hashHelper) {
         this.folderPath = folderPath;
         this.hashHelper = hashHelper;
     }
