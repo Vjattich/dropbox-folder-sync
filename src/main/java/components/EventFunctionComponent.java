@@ -2,7 +2,8 @@ package components;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.Metadata;
-import components.hasher.DBoxHashHelper;
+import components.dbox.DBoxApi;
+import components.dbox.hasher.DBoxHashHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -13,10 +14,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class EventFunctionComponent {
 
-    private final DBoxComponent dBoxComponent;
+    private final DBoxApi dBoxComponent;
     private final DBoxHashHelper hashHelper;
 
-    public EventFunctionComponent(DBoxComponent dBoxComponent, DBoxHashHelper hashHelper) {
+    public EventFunctionComponent(DBoxApi dBoxComponent, DBoxHashHelper hashHelper) {
         this.dBoxComponent = dBoxComponent;
         this.hashHelper = hashHelper;
     }

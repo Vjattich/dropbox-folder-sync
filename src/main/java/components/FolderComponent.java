@@ -36,6 +36,7 @@ public class FolderComponent {
         return new ArrayList<>(Arrays.asList(Paths.get(folderPath).toFile().listFiles()));
     }
 
+    //todo test watch method
     private void watch() {
 
         log.info("Watching path: {}", folderPath);

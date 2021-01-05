@@ -1,10 +1,19 @@
-import components.*;
-import components.hasher.DBoxHashHelper;
-import components.hasher.DBoxHasher;
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.v2.DbxClientV2;
+import components.EventFunctionComponent;
+import components.FilesComponent;
+import components.FolderComponent;
+import components.PropertiesComponent;
+import components.dbox.DBoxApi;
+import components.dbox.DBoxComponent;
+import components.dbox.hasher.DBoxHashHelper;
+import components.dbox.hasher.DBoxHasher;
+import components.utils.DateUtilsComponent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.StandardWatchEventKinds;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -18,7 +27,15 @@ public class Main {
 
         DBoxHashHelper hashHelper = new DBoxHashHelper(new DBoxHasher());
 
-        DBoxComponent dBoxComponent = new DBoxComponent(dateUtils, propComponent.get("dbox.oauth2"), propComponent.get("dbox.client.identifier"));
+        DBoxApi dBoxComponent = new DBoxComponent(
+                dateUtils,
+                new DbxClientV2(
+                        DbxRequestConfig.newBuilder(propComponent.get("dbox.client.identifier"))
+                                .withUserLocale(Locale.getDefault().toString())
+                                .build(),
+                        propComponent.get("dbox.oauth2")
+                )
+        );
 
         EventFunctionComponent eventFunctionComponent = new EventFunctionComponent(dBoxComponent, hashHelper);
 

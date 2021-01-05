@@ -1,5 +1,5 @@
 import com.dropbox.core.v2.files.Metadata;
-import components.DBoxComponent;
+import components.dbox.DBoxApi;
 import components.FilesComponent;
 import components.FolderComponent;
 import lombok.SneakyThrows;
@@ -14,13 +14,13 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class App {
 
-    private final DBoxComponent dBoxComponent;
+    private final DBoxApi dBoxComponent;
     private final FilesComponent filesComponent;
     private final FolderComponent folderComponent;
     private final long updateMilliseconds;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
-    public App(DBoxComponent dBoxComponent,
+    public App(DBoxApi dBoxComponent,
                FilesComponent filesComponent,
                FolderComponent folderComponent,
                long updateMilliseconds) {
