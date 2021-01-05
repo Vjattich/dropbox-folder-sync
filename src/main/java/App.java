@@ -1,3 +1,4 @@
+import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.Metadata;
 import components.dbox.DBoxApi;
 import components.FilesComponent;
@@ -68,9 +69,9 @@ public class App {
     }
 
     private void downloadFiles(List<File> files, List<Metadata> dbFolderEntries) {
-        for (Metadata file : filesComponent.getFilesForDownload(files, dbFolderEntries)) {
-            String name = file.getName();
-            filesComponent.save(name, dBoxComponent.download(name));
+        for (Metadata metadata : filesComponent.getFilesForDownload(files, dbFolderEntries)) {
+            String name = metadata.getName();
+            filesComponent.save(name, ((FileMetadata) metadata).getClientModified() ,dBoxComponent.download(name));
         }
     }
 

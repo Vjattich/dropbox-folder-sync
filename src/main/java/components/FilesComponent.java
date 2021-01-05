@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,9 +31,11 @@ public class FilesComponent {
     }
 
     @SneakyThrows
-    public void save(String fileName, ByteArrayOutputStream byteArrayOutputStream) {
-        try (OutputStream outputStream = new FileOutputStream(folderPath + File.separator + fileName)) {
+    public void save(String fileName, Date clientModifiedDate, ByteArrayOutputStream byteArrayOutputStream) {
+        String filePath = folderPath + File.separator + fileName;
+        try (OutputStream outputStream = new FileOutputStream(filePath)) {
             byteArrayOutputStream.writeTo(outputStream);
+            new File(filePath).setLastModified(clientModifiedDate.getTime());
         }
     }
 
