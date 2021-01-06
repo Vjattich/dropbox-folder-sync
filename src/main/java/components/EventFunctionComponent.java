@@ -1,7 +1,6 @@
 package components;
 
 import com.dropbox.core.v2.files.FileMetadata;
-import com.dropbox.core.v2.files.Metadata;
 import components.dbox.DBoxApi;
 import components.dbox.hasher.DBoxHashHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -63,8 +62,9 @@ public class EventFunctionComponent {
         Map<String, String> folderEntries = dBoxComponent.getFolderEntries().stream()
                 .collect(
                         Collectors.toMap(
-                                Metadata::getName,
-                                metadata -> metadata.getContentHash())
+                                FileMetadata::getName,
+                                FileMetadata::getContentHash
+                        )
                 );
 
         boolean b = folderEntries.containsKey(file.getName()) && folderEntries.get(file.getName()).equals(hashHelper.getHash(file));

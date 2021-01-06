@@ -28,20 +28,20 @@ public class FilesComponent {
         return dbFolderEntries.stream().filter(metadata -> isMetadataDifferent(fileMap, metadata)).collect(toList());
     }
 
-    private boolean isMetadataDifferent(Map<String, File> fileHexMap, FileMetadata fileMetadata) {
-        File file = fileHexMap.get(fileMetadata.getName());
+    private boolean isMetadataDifferent(Map<String, File> fileMap, FileMetadata fileMetadata) {
+        File file = fileMap.get(fileMetadata.getName());
         return Objects.isNull(file)
                 || !fileMetadata.getContentHash().equals(hashHelper.getHash(file))
                 && dateUtils.toLocalDateTimeWithoutNano(fileMetadata.getClientModified()).isAfter(dateUtils.toLocalDateTimeWithoutNano(file.lastModified()));
     }
 
     public List<File> getFilesForUpload(List<File> folderFiles, List<FileMetadata> dbFolderEntries) {
-        Map<String, FileMetadata> metadataHexMap = getMetadataMap(dbFolderEntries);
-        return folderFiles.stream().filter(file -> isFileDifferent(metadataHexMap, file)).collect(toList());
+        Map<String, FileMetadata> metadataMap = getMetadataMap(dbFolderEntries);
+        return folderFiles.stream().filter(file -> isFileDifferent(metadataMap, file)).collect(toList());
     }
 
-    private boolean isFileDifferent(Map<String, FileMetadata> metadataHexMap, File localFile) {
-        FileMetadata fileMetadata = metadataHexMap.get(localFile.getName());
+    private boolean isFileDifferent(Map<String, FileMetadata> metadataMap, File localFile) {
+        FileMetadata fileMetadata = metadataMap.get(localFile.getName());
         return Objects.isNull(fileMetadata)
                 || !hashHelper.getHash(localFile).equals(fileMetadata.getContentHash())
                 && dateUtils.toLocalDateTimeWithoutNano(localFile.lastModified()).isAfter(dateUtils.toLocalDateTimeWithoutNano(fileMetadata.getClientModified()));
