@@ -15,13 +15,16 @@ import java.nio.file.StandardWatchEventKinds;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 public class Main {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
 
-        PropertiesComponent propComponent = new PropertiesComponent("src/main/resources/application.properties");
+        String property = System.getProperty("properties");
+
+        PropertiesComponent propComponent = new PropertiesComponent(Objects.isNull(property) ? "src/main/resources/application.properties" : property);
 
         DateUtilsComponent dateUtils = new DateUtilsComponent();
 
