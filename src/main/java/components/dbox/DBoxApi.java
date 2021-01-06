@@ -1,6 +1,6 @@
 package components.dbox;
 
-import com.dropbox.core.v2.files.Metadata;
+import com.dropbox.core.v2.files.FileMetadata;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -12,6 +12,6 @@ public interface DBoxApi {
 
     ByteArrayOutputStream download(String name);
 
-    List<Metadata> getFolderEntries();
+    List<FileMetadata> getFolderEntries();
 
 }

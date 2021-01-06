@@ -49,7 +49,7 @@ public class App {
 
         List<File> files = folderComponent.getFiles();
 
-        List<Metadata> dbFolderEntries = dBoxComponent.getFolderEntries();
+        List<FileMetadata> dbFolderEntries = dBoxComponent.getFolderEntries();
 
         log.info("start sync phase");
 
@@ -62,13 +62,13 @@ public class App {
         log.info("end sync phase");
     }
 
-    private void uploadFiles(List<File> listFiles, List<Metadata> dbFolderEntries) {
+    private void uploadFiles(List<File> listFiles, List<FileMetadata> dbFolderEntries) {
         for (File file : filesComponent.getFilesForUpload(listFiles, dbFolderEntries)) {
             dBoxComponent.upload(file);
         }
     }
 
-    private void downloadFiles(List<File> files, List<Metadata> dbFolderEntries) {
+    private void downloadFiles(List<File> files, List<FileMetadata> dbFolderEntries) {
         for (Metadata metadata : filesComponent.getFilesForDownload(files, dbFolderEntries)) {
             String name = metadata.getName();
             filesComponent.save(name, ((FileMetadata) metadata).getClientModified() ,dBoxComponent.download(name));
