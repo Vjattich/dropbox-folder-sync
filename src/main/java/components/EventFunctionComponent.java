@@ -64,7 +64,7 @@ public class EventFunctionComponent {
                 .collect(
                         Collectors.toMap(
                                 Metadata::getName,
-                                metadata -> ((FileMetadata) metadata).getContentHash())
+                                metadata -> metadata.getContentHash())
                 );
 
         boolean b = folderEntries.containsKey(file.getName()) && folderEntries.get(file.getName()).equals(hashHelper.getHash(file));

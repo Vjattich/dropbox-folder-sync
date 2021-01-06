@@ -1,16 +1,10 @@
 package components;
 
 import com.dropbox.core.v2.files.FileMetadata;
-import com.dropbox.core.v2.files.Metadata;
 import components.dbox.hasher.DBoxHashHelper;
 import components.utils.DateUtilsComponent;
-import lombok.SneakyThrows;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,27 +14,16 @@ import static java.util.stream.Collectors.toMap;
 
 public class FilesComponent {
 
-    private final String folderPath;
     private final DBoxHashHelper hashHelper;
     private final DateUtilsComponent dateUtils;
 
-    public FilesComponent(String folderPath, DBoxHashHelper hashHelper, DateUtilsComponent dateUtils) {
-        this.folderPath = folderPath;
+    public FilesComponent(DBoxHashHelper hashHelper, DateUtilsComponent dateUtils) {
         this.hashHelper = hashHelper;
         this.dateUtils = dateUtils;
     }
 
-    @SneakyThrows
-    public void save(String fileName, Date clientModifiedDate, ByteArrayOutputStream byteArrayOutputStream) {
-        String filePath = folderPath + File.separator + fileName;
-        try (OutputStream outputStream = new FileOutputStream(filePath)) {
-            byteArrayOutputStream.writeTo(outputStream);
-            new File(filePath).setLastModified(clientModifiedDate.getTime());
-        }
-    }
-
     //todo this can be solve through good object
-    public List<Metadata> getFilesForDownload(List<File> folderFiles, List<FileMetadata> dbFolderEntries) {
+    public List<FileMetadata> getFilesForDownload(List<File> folderFiles, List<FileMetadata> dbFolderEntries) {
         Map<String, File> fileMap = getFileMap(folderFiles);
         return dbFolderEntries.stream().filter(metadata -> isMetadataDifferent(fileMap, metadata)).collect(toList());
     }
@@ -78,7 +61,7 @@ public class FilesComponent {
         return dbFolderEntries.stream()
                 .collect(
                         toMap(
-                                Metadata::getName,
+                                FileMetadata::getName,
                                 metadata -> metadata
                         )
                 );

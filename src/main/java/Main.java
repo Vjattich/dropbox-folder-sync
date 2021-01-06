@@ -41,11 +41,7 @@ public class Main {
 
         new App(
                 dBoxComponent,
-                new FilesComponent(
-                        propComponent.get("sync.folder"),
-                        hashHelper,
-                        dateUtils
-                ),
+                new FilesComponent(hashHelper, dateUtils),
                 new FolderComponent(
                         propComponent.get("sync.folder"),
                         Map.of(

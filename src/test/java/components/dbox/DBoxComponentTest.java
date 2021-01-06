@@ -1,26 +1,22 @@
 package components.dbox;
 
 import com.dropbox.core.DbxException;
-import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.oauth.DbxCredential;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.DbxUserFilesRequests;
 import com.dropbox.core.v2.files.DownloadBuilder;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.UploadBuilder;
 import components.utils.DateUtilsComponent;
-import lombok.SneakyThrows;
-import org.hamcrest.Matcher;
-import org.hamcrest.core.Is;
-import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+
 //todo is a stupid test, it is all of mock
 public class DBoxComponentTest {
 

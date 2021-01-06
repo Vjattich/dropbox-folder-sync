@@ -1,8 +1,7 @@
 import com.dropbox.core.v2.files.FileMetadata;
-import com.dropbox.core.v2.files.Metadata;
-import components.dbox.DBoxApi;
 import components.FilesComponent;
 import components.FolderComponent;
+import components.dbox.DBoxApi;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,9 +68,9 @@ public class App {
     }
 
     private void downloadFiles(List<File> files, List<FileMetadata> dbFolderEntries) {
-        for (Metadata metadata : filesComponent.getFilesForDownload(files, dbFolderEntries)) {
+        for (FileMetadata metadata : filesComponent.getFilesForDownload(files, dbFolderEntries)) {
             String name = metadata.getName();
-            filesComponent.save(name, ((FileMetadata) metadata).getClientModified() ,dBoxComponent.download(name));
+            folderComponent.save(name, metadata.getClientModified(), dBoxComponent.download(name));
         }
     }
 

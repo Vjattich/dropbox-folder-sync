@@ -1,6 +1,5 @@
 package components.utils;
 
-import components.utils.DateUtilsComponent;
 import org.junit.Assert;
 import org.junit.Test;
 
