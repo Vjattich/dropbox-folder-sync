@@ -11,9 +11,9 @@ public class DBoxHashHelperTest {
     @Test
     public void testGetHash() throws NoSuchAlgorithmException {
         DBoxHashHelper dboxHashHelper = new DBoxHashHelper(new DBoxHasher());
-        assertEquals(dboxHashHelper.getHash(new File("src/test/resources/scratches/1.md")), "4c7e488f75c03604cc22f891e36b32f42787fd9345a8df194be53248c6dfd476");
-        assertEquals(dboxHashHelper.getHash(new File("src/test/resources/scratches/2.md")), "2b3a8ce336e7f1f8a9827b990c5509f9d9087453367335a259b5a3f4a36fa13f");
-        assertEquals(dboxHashHelper.getHash(new File("src/test/resources/scratches/3.md")), "cdecb1f8600ed4e0069b61dc7ac17bd812f51874c930400ceb82f6eb25285b19");
+        assertEquals(dboxHashHelper.getHash(new File("src/test/resources/scratches/1.md")), "5df7bc577d21206f56f7ee860bf1f67600f3985813ce2eca2ca456259e779d0b");
+        assertEquals(dboxHashHelper.getHash(new File("src/test/resources/scratches/2.md")), "2d9ea99bd061f3c446e2b85533b595fb8390ba1caacaf772b50088ec346323f2");
+        assertEquals(dboxHashHelper.getHash(new File("src/test/resources/scratches/3.md")), "7a02ab1cdbc07237616de0469bfdd4f84db5af0bf0183492dfb1c891e749ca26");
     }
 
     @Test
