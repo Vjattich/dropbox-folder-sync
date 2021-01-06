@@ -22,9 +22,7 @@ public class Main {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
 
-        String property = System.getProperty("properties");
-
-        PropertiesComponent propComponent = new PropertiesComponent(Objects.isNull(property) ? "src/main/resources/application.properties" : property);
+        PropertiesComponent propComponent = new PropertiesComponent(System.getProperty("properties"));
 
         DateUtilsComponent dateUtils = new DateUtilsComponent();
 
