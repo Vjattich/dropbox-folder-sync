@@ -1,4 +1,4 @@
-package components.utils;
+package components.util;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -6,7 +6,7 @@ import com.dropbox.core.v2.files.DbxUserFilesRequests;
 import com.dropbox.core.v2.files.DownloadBuilder;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.UploadBuilder;
-import components.utils.DateUtilsComponent;
+import components.util.DateUtilsComponent;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -15,7 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 
 //todo is a stupid test, it is all of mock
 public class DBoxComponentTest {

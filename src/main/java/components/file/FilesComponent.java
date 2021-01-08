@@ -1,8 +1,8 @@
-package components;
+package components.file;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import components.dbox.hasher.DBoxHashHelper;
-import components.utils.DateUtilsComponent;
+import components.util.DateUtilsComponent;
 
 import java.io.File;
 import java.util.List;

@@ -3,7 +3,7 @@ package components.dbox;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.WriteMode;
-import components.utils.DateUtilsComponent;
+import components.util.DateUtilsComponent;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 

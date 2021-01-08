@@ -1,14 +1,15 @@
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
-import components.EventFunctionComponent;
-import components.FilesComponent;
-import components.FolderComponent;
-import components.PropertiesComponent;
 import components.dbox.DBoxApi;
 import components.dbox.DBoxComponent;
 import components.dbox.hasher.DBoxHashHelper;
 import components.dbox.hasher.DBoxHasher;
-import components.utils.DateUtilsComponent;
+import components.file.FilesComponent;
+import components.folder.FolderComponent;
+import components.folder.FolderEventFunction;
+import components.properties.AppProperties;
+import components.properties.PropertiesComponent;
+import components.util.DateUtilsComponent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.StandardWatchEventKinds;
@@ -21,7 +22,7 @@ public class Main {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
 
-        PropertiesComponent propComponent = new PropertiesComponent(System.getProperty("properties"));
+        AppProperties appProperties = new AppProperties(new PropertiesComponent(System.getProperty("properties")));
 
         DateUtilsComponent dateUtils = new DateUtilsComponent();
 
@@ -30,27 +31,27 @@ public class Main {
         DBoxApi dBoxComponent = new DBoxComponent(
                 dateUtils,
                 new DbxClientV2(
-                        DbxRequestConfig.newBuilder(propComponent.get("dbox.client.identifier"))
+                        DbxRequestConfig.newBuilder(appProperties.getClientIdentifier())
                                 .withUserLocale(Locale.getDefault().toString())
                                 .build(),
-                        propComponent.get("dbox.oauth2")
+                        appProperties.getDBoxAuth()
                 )
         );
 
-        EventFunctionComponent eventFunctionComponent = new EventFunctionComponent(dBoxComponent, hashHelper);
+        FolderEventFunction eventFunction = new FolderEventFunction(dBoxComponent, hashHelper);
 
         new App(
                 dBoxComponent,
                 new FilesComponent(hashHelper, dateUtils),
                 new FolderComponent(
-                        propComponent.get("sync.folder"),
+                        appProperties.getSyncFolder(),
                         Map.of(
-                                StandardWatchEventKinds.ENTRY_CREATE, path -> eventFunctionComponent.eventCreateFunction(path),
-                                StandardWatchEventKinds.ENTRY_DELETE, path -> eventFunctionComponent.eventDeleteFunction(path),
-                                StandardWatchEventKinds.ENTRY_MODIFY, path -> eventFunctionComponent.eventModifyFunction(path)
+                                StandardWatchEventKinds.ENTRY_CREATE, eventFunction::eventCreateFunction,
+                                StandardWatchEventKinds.ENTRY_DELETE, eventFunction::eventDeleteFunction,
+                                StandardWatchEventKinds.ENTRY_MODIFY, eventFunction::eventModifyFunction
                         )
                 ),
-                (long) propComponent.get("sync.time", long.class)
+                appProperties.getSyncTime()
         ).sync();
 
     }

@@ -1,5 +1,6 @@
-package components;
+package components.folder;
 
+import components.folder.FolderComponent;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

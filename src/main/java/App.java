@@ -1,6 +1,6 @@
 import com.dropbox.core.v2.files.FileMetadata;
-import components.FilesComponent;
-import components.FolderComponent;
+import components.file.FilesComponent;
+import components.folder.FolderComponent;
 import components.dbox.DBoxApi;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

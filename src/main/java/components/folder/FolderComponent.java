@@ -1,4 +1,4 @@
-package components;
+package components.folder;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

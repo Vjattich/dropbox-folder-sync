@@ -1,4 +1,4 @@
-package components;
+package components.folder;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import components.dbox.DBoxApi;
@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class EventFunctionComponent {
+public class FolderEventFunction {
 
     private final DBoxApi dBoxComponent;
     private final DBoxHashHelper hashHelper;
 
-    public EventFunctionComponent(DBoxApi dBoxComponent, DBoxHashHelper hashHelper) {
+    public FolderEventFunction(DBoxApi dBoxComponent, DBoxHashHelper hashHelper) {
         this.dBoxComponent = dBoxComponent;
         this.hashHelper = hashHelper;
     }
