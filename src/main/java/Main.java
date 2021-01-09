@@ -1,15 +1,16 @@
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
-import components.dbox.DBoxApi;
-import components.dbox.DBoxComponent;
-import components.dbox.hasher.DBoxHashHelper;
-import components.dbox.hasher.DBoxHasher;
-import components.file.FilesComponent;
-import components.folder.FolderComponent;
-import components.folder.FolderEventFunction;
-import components.properties.AppProperties;
-import components.properties.PropertiesComponent;
-import components.util.DateUtilsComponent;
+import synchronizer.App;
+import synchronizer.components.dbox.DBoxApi;
+import synchronizer.components.dbox.DBoxComponent;
+import synchronizer.components.dbox.hasher.DBoxHashHelper;
+import synchronizer.components.dbox.hasher.DBoxHasher;
+import synchronizer.components.file.FilesComponent;
+import synchronizer.components.folder.FolderComponent;
+import synchronizer.components.folder.FolderEventFunction;
+import synchronizer.components.properties.AppProperties;
+import synchronizer.components.properties.PropertiesComponent;
+import synchronizer.components.util.DateUtilsComponent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.StandardWatchEventKinds;
