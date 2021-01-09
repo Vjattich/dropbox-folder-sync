@@ -1,4 +1,4 @@
-package components.hasher;
+package components.dbox.hasher;
 
 import java.nio.ByteBuffer;
 import java.security.DigestException;

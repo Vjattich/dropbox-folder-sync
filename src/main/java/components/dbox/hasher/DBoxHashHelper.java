@@ -1,4 +1,4 @@
-package components.hasher;
+package components.dbox.hasher;
 
 import lombok.SneakyThrows;
 

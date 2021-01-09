@@ -1,9 +1,9 @@
-package components;
+package components.folder;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.function.Function;
@@ -23,6 +23,15 @@ public class FolderComponent {
         this.eventsMap = eventsMap;
     }
 
+    @SneakyThrows
+    public void save(String fileName, Date clientModifiedDate, ByteArrayOutputStream byteArrayOutputStream) {
+        String filePath = folderPath + File.separator + fileName;
+        try (OutputStream outputStream = new FileOutputStream(filePath)) {
+            byteArrayOutputStream.writeTo(outputStream);
+            new File(filePath).setLastModified(clientModifiedDate.getTime());
+        }
+    }
+
     public void stopWatch() {
         this.stopped = true;
     }
@@ -36,6 +45,7 @@ public class FolderComponent {
         return new ArrayList<>(Arrays.asList(Paths.get(folderPath).toFile().listFiles()));
     }
 
+    //todo test watch method
     private void watch() {
 
         log.info("Watching path: {}", folderPath);

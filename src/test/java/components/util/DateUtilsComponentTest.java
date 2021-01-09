@@ -1,12 +1,10 @@
-package components;
+package components.util;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Date;
 
 import static org.junit.Assert.assertTrue;

@@ -1,7 +1,7 @@
-import com.dropbox.core.v2.files.Metadata;
-import components.DBoxComponent;
-import components.FilesComponent;
-import components.FolderComponent;
+import com.dropbox.core.v2.files.FileMetadata;
+import components.file.FilesComponent;
+import components.folder.FolderComponent;
+import components.dbox.DBoxApi;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,13 +14,13 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class App {
 
-    private final DBoxComponent dBoxComponent;
+    private final DBoxApi dBoxComponent;
     private final FilesComponent filesComponent;
     private final FolderComponent folderComponent;
     private final long updateMilliseconds;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 
-    public App(DBoxComponent dBoxComponent,
+    public App(DBoxApi dBoxComponent,
                FilesComponent filesComponent,
                FolderComponent folderComponent,
                long updateMilliseconds) {
@@ -48,7 +48,7 @@ public class App {
 
         List<File> files = folderComponent.getFiles();
 
-        List<Metadata> dbFolderEntries = dBoxComponent.getFolderEntries();
+        List<FileMetadata> dbFolderEntries = dBoxComponent.getFolderEntries();
 
         log.info("start sync phase");
 
@@ -61,16 +61,16 @@ public class App {
         log.info("end sync phase");
     }
 
-    private void uploadFiles(List<File> listFiles, List<Metadata> dbFolderEntries) {
+    private void uploadFiles(List<File> listFiles, List<FileMetadata> dbFolderEntries) {
         for (File file : filesComponent.getFilesForUpload(listFiles, dbFolderEntries)) {
             dBoxComponent.upload(file);
         }
     }
 
-    private void downloadFiles(List<File> files, List<Metadata> dbFolderEntries) {
-        for (Metadata file : filesComponent.getFilesForDownload(files, dbFolderEntries)) {
-            String name = file.getName();
-            filesComponent.save(name, dBoxComponent.download(name));
+    private void downloadFiles(List<File> files, List<FileMetadata> dbFolderEntries) {
+        for (FileMetadata metadata : filesComponent.getFilesForDownload(files, dbFolderEntries)) {
+            String name = metadata.getName();
+            folderComponent.save(name, metadata.getClientModified(), dBoxComponent.download(name));
         }
     }
 

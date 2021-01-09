@@ -1,9 +1,9 @@
-package components;
+package components.dbox;
 
-import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
-import com.dropbox.core.v2.files.Metadata;
+import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.WriteMode;
+import components.util.DateUtilsComponent;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,25 +11,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
-import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Slf4j
-public class DBoxComponent {
+public class DBoxComponent implements DBoxApi {
 
     private final DateUtilsComponent dateUtils;
 
     private final DbxClientV2 client;
 
-    public DBoxComponent(DateUtilsComponent dateUtils, String oauth2, String clientIdentifier) {
+    public DBoxComponent(DateUtilsComponent dateUtils, DbxClientV2 client) {
         this.dateUtils = dateUtils;
-        this.client = new DbxClientV2(
-                DbxRequestConfig.newBuilder(clientIdentifier)
-                        .withUserLocale(Locale.getDefault().toString())
-                        .build(),
-                oauth2
-        );
+        this.client = client;
     }
 
+    @Override
     @SneakyThrows
     //todo mute version
     public void upload(File file) {
@@ -43,6 +39,7 @@ public class DBoxComponent {
                 .uploadAndFinish(new FileInputStream(file));
     }
 
+    @Override
     @SneakyThrows
     public ByteArrayOutputStream download(String name) {
 
@@ -53,11 +50,15 @@ public class DBoxComponent {
         return out;
     }
 
+    @Override
     @SneakyThrows
-    public List<Metadata> getFolderEntries() {
+    public List<FileMetadata> getFolderEntries() {
         return client.files()
                 .listFolder("")
-                .getEntries();
+                .getEntries()
+                .stream()
+                .map(metadata -> (FileMetadata) metadata)
+                .collect(Collectors.toList());
     }
 
 }

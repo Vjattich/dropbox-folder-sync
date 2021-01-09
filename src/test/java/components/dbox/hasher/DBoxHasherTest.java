@@ -1,4 +1,4 @@
-package components.hasher;
+package components.dbox.hasher;
 
 import org.junit.Rule;
 import org.junit.Test;
